@@ -10,9 +10,14 @@ pipeline {
                 echo 'Building application...'
             }
         }
-        stage('Test') {
+        stage('Debug Paths') {
             steps {
-                echo 'Running tests...'
+                container('jnlp') {
+                    sh 'echo "=== jnlp pwd ===" && pwd && ls -la'
+                }
+                container('kaniko') {
+                    sh 'echo "=== kaniko pwd ===" && pwd && ls -la'
+                }
             }
         }
         stage('Build & Push Image') {
