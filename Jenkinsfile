@@ -19,6 +19,7 @@ pipeline {
             steps {
                 container('kaniko') {
                     sh '''
+                    export GOOGLE_APPLICATION_CREDENTIALS=/secret/kaniko-key.json
                     /kaniko/executor \
                       --context=`pwd` \
                       --dockerfile=Dockerfile \
