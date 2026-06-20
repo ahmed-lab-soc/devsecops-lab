@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            label 'kaniko'
+        }
+    }
     stages {
         stage('Build') {
             steps {
@@ -11,9 +15,16 @@ pipeline {
                 echo 'Running tests...'
             }
         }
-        stage('Deploy') {
+        stage('Build & Push Image') {
             steps {
-                echo 'Deploying application...'
+                container('kaniko') {
+                    sh '''
+                    /kaniko/executor \
+                      --context=`pwd` \
+                      --dockerfile=Dockerfile \
+                      --destination=europe-west1-docker.pkg.dev/lab-soc-dev/devsecops-lab/app:latest
+                    '''
+                }
             }
         }
     }
