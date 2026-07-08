@@ -19,11 +19,13 @@ pipeline {
             steps {
                 container('dependency-check') {
                     sh '''
+                    export NVD_API_KEY=$(cat /secret-nvd/NVD_API_KEY)
                     /usr/share/dependency-check/bin/dependency-check.sh \
                       --project "devsecops-lab" \
                       --scan . \
                       --format HTML \
                       --out dependency-check-report \
+                      --nvdApiKey "$NVD_API_KEY" \
                       --disableAssembly
                     '''
                 }
