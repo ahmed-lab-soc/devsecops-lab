@@ -26,6 +26,7 @@ pipeline {
                       --format HTML \
                       --out dependency-check-report \
                       --nvdApiKey "$NVD_API_KEY" \
+                      --enableExperimental \
                       --disableAssembly
                     '''
                 }
