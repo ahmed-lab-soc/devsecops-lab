@@ -10,14 +10,29 @@ pipeline {
                 echo 'Building application...'
             }
         }
-        stage('Debug Paths') {
+        stage('SCA') {
+            agent {
+                kubernetes {
+                    label 'sca'
+                }
+            }
             steps {
-                container('jnlp') {
-                    sh 'echo "=== jnlp pwd ===" && pwd && ls -la'
+                container('dependency-check') {
+                    sh '''
+                    /usr/share/dependency-check/bin/dependency-check.sh \
+                      --project "devsecops-lab" \
+                      --scan . \
+                      --format HTML \
+                      --out dependency-check-report \
+                      --disableAssembly
+                    '''
                 }
-                container('kaniko') {
-                    sh 'echo "=== kaniko pwd ===" && pwd && ls -la'
-                }
+                archiveArtifacts artifacts: 'dependency-check-report/*.html', allowEmptyArchive: true
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
             }
         }
         stage('Build & Push Image') {
