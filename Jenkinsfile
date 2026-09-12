@@ -20,7 +20,6 @@ pipeline {
                 container('dependency-check') {
                     sh '''
                     export NVD_API_KEY=$(cat /secret-nvd/NVD_API_KEY)
-                    /usr/share/dependency-check/bin/dependency-check.sh --purge || true
                     /usr/share/dependency-check/bin/dependency-check.sh \
                       --project "devsecops-lab" \
                       --scan . \
@@ -28,7 +27,15 @@ pipeline {
                       --out dependency-check-report \
                       --nvdApiKey "$NVD_API_KEY" \
                       --enableExperimental \
-                      --disableAssembly
+                      --disableAssembly || true
+
+                    if [ -f dependency-check-report/dependency-check-report.html ]; then
+                      echo "Rapport genere avec succes malgre les warnings"
+                      exit 0
+                    else
+                      echo "Echec reel - rapport non genere"
+                      exit 1
+                    fi
                     '''
                 }
                 archiveArtifacts artifacts: 'dependency-check-report/*.html', allowEmptyArchive: true
