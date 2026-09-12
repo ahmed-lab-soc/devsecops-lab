@@ -42,7 +42,7 @@ pipeline {
             steps {
                 container('slscan') {
                     sh '''
-                    scan --type python --src . --out sast-report
+                    scan --type python --src . --out sast-report --exclude "**/site-packages/**,**/dist-packages/**"
                     '''
                 }
                 archiveArtifacts artifacts: 'sast-report/**', allowEmptyArchive: true
