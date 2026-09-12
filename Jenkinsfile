@@ -33,6 +33,21 @@ pipeline {
                 archiveArtifacts artifacts: 'dependency-check-report/*.html', allowEmptyArchive: true
             }
         }
+        stage('SAST') {
+            agent {
+                kubernetes {
+                    label 'sast'
+                }
+            }
+            steps {
+                container('slscan') {
+                    sh '''
+                    scan --type python --src . --out sast-report
+                    '''
+                }
+                archiveArtifacts artifacts: 'sast-report/**', allowEmptyArchive: true
+            }
+        }
         stage('Test') {
             steps {
                 echo 'Running tests...'
