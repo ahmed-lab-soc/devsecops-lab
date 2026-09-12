@@ -20,7 +20,7 @@ pipeline {
                 container('dependency-check') {
                     sh '''
                     export NVD_API_KEY=$(cat /secret-nvd/NVD_API_KEY)
-                    /usr/share/dependency-check/bin/dependency-check.sh --purge
+                    /usr/share/dependency-check/bin/dependency-check.sh --purge || true
                     /usr/share/dependency-check/bin/dependency-check.sh \
                       --project "devsecops-lab" \
                       --scan . \
