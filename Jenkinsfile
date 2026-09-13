@@ -117,7 +117,7 @@ pipeline {
             steps {
                 container('inspec') {
                     sh '''
-                    inspec exec https://github.com/dev-sec/linux-baseline --reporter html:compliance-report.html || true
+                    inspec exec https://github.com/dev-sec/linux-baseline --reporter html:compliance-report.html --chef-license accept || true
                     '''
                 }
                 archiveArtifacts artifacts: 'compliance-report.html', allowEmptyArchive: true
