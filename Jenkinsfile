@@ -123,5 +123,21 @@ pipeline {
                 archiveArtifacts artifacts: 'compliance-report.html', allowEmptyArchive: true
             }
         }
+        stage('Kubernetes Security') {
+            agent {
+                kubernetes {
+                    label 'kubesec'
+                }
+            }
+            steps {
+                container('kubesec') {
+                    sh '''
+                    kubesec scan deployment.yaml > kubesec-report.json || true
+                    cat kubesec-report.json
+                    '''
+                }
+                archiveArtifacts artifacts: 'kubesec-report.json', allowEmptyArchive: true
+            }
+        }
     }
 }
