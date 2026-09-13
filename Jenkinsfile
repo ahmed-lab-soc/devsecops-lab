@@ -130,7 +130,7 @@ pipeline {
                 }
             }
             steps {
-                container('kubesec') {
+                container('jnlp') {
                     sh '''
                     curl -sSX POST --data-binary @deployment.yaml https://v2.kubesec.io/scan > kubesec-report.json || true
                     cat kubesec-report.json
