@@ -108,5 +108,20 @@ pipeline {
                 archiveArtifacts artifacts: 'zap-report.html', allowEmptyArchive: true
             }
         }
+        stage('Compliance') {
+            agent {
+                kubernetes {
+                    label 'compliance'
+                }
+            }
+            steps {
+                container('inspec') {
+                    sh '''
+                    inspec exec https://github.com/dev-sec/linux-baseline --reporter html:compliance-report.html || true
+                    '''
+                }
+                archiveArtifacts artifacts: 'compliance-report.html', allowEmptyArchive: true
+            }
+        }
     }
 }
