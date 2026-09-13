@@ -74,5 +74,22 @@ pipeline {
                 }
             }
         }
+        stage('Scan Image') {
+            agent {
+                kubernetes {
+                    label 'trivy'
+                }
+            }
+            steps {
+                container('trivy') {
+                    sh '''
+                    export GOOGLE_APPLICATION_CREDENTIALS=/secret/kaniko-key.json
+                    trivy image --format table --output trivy-report.txt europe-west1-docker.pkg.dev/lab-soc-dev/devsecops-lab/app:latest || true
+                    cat trivy-report.txt
+                    '''
+                }
+                archiveArtifacts artifacts: 'trivy-report.txt', allowEmptyArchive: true
+            }
+        }
     }
 }
