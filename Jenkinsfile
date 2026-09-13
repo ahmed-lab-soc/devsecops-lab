@@ -91,5 +91,20 @@ pipeline {
                 archiveArtifacts artifacts: 'trivy-report.txt', allowEmptyArchive: true
             }
         }
+        stage('DAST') {
+            agent {
+                kubernetes {
+                    label 'zap'
+                }
+            }
+            steps {
+                container('zap') {
+                    sh '''
+                    zap-baseline.py -t http://devsecops-app-service -r zap-report.html || true
+                    '''
+                }
+                archiveArtifacts artifacts: 'zap-report.html', allowEmptyArchive: true
+            }
+        }
     }
 }
