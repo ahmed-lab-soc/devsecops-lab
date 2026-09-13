@@ -100,7 +100,9 @@ pipeline {
             steps {
                 container('zap') {
                     sh '''
-                    zap-baseline.py -t http://devsecops-app-service -r zap-report.html || true
+                    mkdir -p /zap/wrk
+                    zap-baseline.py -t http://devsecops-app-service -r /zap/wrk/zap-report.html || true
+                    cp /zap/wrk/zap-report.html zap-report.html || true
                     '''
                 }
                 archiveArtifacts artifacts: 'zap-report.html', allowEmptyArchive: true
