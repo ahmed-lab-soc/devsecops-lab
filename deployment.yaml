@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devsecops-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devsecops-app
+  template:
+    metadata:
+      labels:
+        app: devsecops-app
+    spec:
+      containers:
+      - name: devsecops-app
+        image: europe-west1-docker.pkg.dev/lab-soc-dev/devsecops-lab/app:latest
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: devsecops-app-service
+spec:
+  selector:
+    app: devsecops-app
+  ports:
+  - port: 80
+    targetPort: 5000
+  type: ClusterIP
