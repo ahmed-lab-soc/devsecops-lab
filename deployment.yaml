@@ -12,6 +12,8 @@ spec:
       labels:
         app: devsecops-app
     spec:
+      imagePullSecrets:
+      - name: gcr-secret
       containers:
       - name: devsecops-app
         image: europe-west1-docker.pkg.dev/lab-soc-dev/devsecops-lab/app:latest
